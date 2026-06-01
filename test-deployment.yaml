@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-nginx
+  labels:
+    app: nginx
+spec:
+  replicas: 3 
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:stable
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+            - name: test-secret
+              readOnly: true
+              mountPath: "/etc/test-secret"
+      volumes:
+        - name: test-secret
+          secret:
+            secretName: test-secret
+        - name: nginx-config
+          configMap:
+            name: nginx-config

@@ -1,0 +1,21 @@
+apiVersion: v1 
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |
+    server {
+      listen 80;
+      return 301 https://$host$request_uri;
+    }
+
+    server {
+      listen 433 ssl;
+      ssl_certificate     /etc/test-secret/tls.crt;
+      ssl_certificate_key /etc/test-secret/tls.key;
+
+      location / {
+        root /usr/share/nginx/html;
+        index index.html;
+      }
+    }
